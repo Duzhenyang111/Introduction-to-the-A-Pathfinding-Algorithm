@@ -103,7 +103,6 @@ def visualize_search(graph, search_steps, start, goal):
     pos = {node: (node[0], -node[1]) for node in G.nodes()}  # 使用网格坐标
     fig, ax = plt.subplots(figsize=(10, 10))
 
-
     def update(num):
         # 更新动画帧
         ax.clear()
@@ -125,20 +124,19 @@ def visualize_search(graph, search_steps, start, goal):
             nx.draw_networkx_nodes(G, pos, nodelist=list(G.nodes()), node_color=node_colors, node_size=700)
             labels = {node: f"{cost_so_far[node]}" for node in cost_so_far}
             nx.draw_networkx_labels(G, pos, labels, font_size=12, font_color='black')
+        if num == len(search_steps) - 1:
+            # 高亮显示最短路径
+            path = []
+            current = goal
+            while current != start:
+                path.append((came_from[current], current))
+                current = came_from[current]
+            path.reverse()
+            nx.draw_networkx_edges(G, pos, edgelist=path, edge_color='blue', width=2, arrows=True, arrowsize=20)
         plt.title("A* Search Visualization")
 
-    ani = FuncAnimation(fig, update, frames=len(search_steps), interval=200, repeat=False)
+    ani = FuncAnimation(fig, update, frames=len(search_steps) + 1, interval=200, repeat=False)
     return ani
-
-# # 定义网格图
-# width, height = 15, 15
-# graph = GridGraph(width, height)
-
-# start = (2, 1)
-# goal = (4, 10)
-# came_from, cost_so_far, search_steps = a_star_search(graph, start, goal, heuristic)
-
-
 
 # 示例使用
 obstacles = [(1, 1), (2, 2), (3, 3)]  # 障碍物位置
@@ -152,11 +150,3 @@ print("成本:", cost_so_far)
 print("搜索步骤:", search_steps[-1])
 ani = visualize_search(graph, search_steps, start, goal)
 plt.show()
-
-
-
-
-
-
-
-
