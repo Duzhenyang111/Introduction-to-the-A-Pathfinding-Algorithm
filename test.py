@@ -110,7 +110,7 @@ def visualize_search(graph, search_steps, start, goal):
         if num < len(search_steps):
             came_from, cost_so_far = search_steps[num]
             edges = [(came_from[node], node) for node in came_from if came_from[node] is not None]
-            nx.draw_networkx_edges(GG, pos, edgelist=edges, edge_color='r', width=2, arrows=True, arrowsize=20)
+            nx.draw_networkx_edges(GG, pos, edgelist=edges, edge_color='r', width=1, arrows=True, arrowsize=15)
             node_colors = []
             for node in G.nodes():
                 if node == start:
@@ -132,10 +132,10 @@ def visualize_search(graph, search_steps, start, goal):
                 path.append((came_from[current], current))
                 current = came_from[current]
             path.reverse()
-            nx.draw_networkx_edges(G, pos, edgelist=path, edge_color='blue', width=2, arrows=True, arrowsize=20)
+            nx.draw_networkx_edges(GG, pos, edgelist=path, edge_color='blue', width=2, arrows=True, arrowsize=20)
         plt.title("A* Search Visualization")
 
-    ani = FuncAnimation(fig, update, frames=len(search_steps) + 1, interval=200, repeat=False)
+    ani = FuncAnimation(fig, update, frames=len(search_steps), interval=200, repeat=False)
     return ani
 
 # 示例使用
