@@ -58,6 +58,7 @@ def a_star_search(graph, start, goal, heuristic):
 
     while not frontier.empty():
         current_priority, current = frontier.get()
+        print("当前节点:", current)
         if current == goal:
             break
 
@@ -133,16 +134,19 @@ def visualize_search(graph, search_steps, start, goal):
                 current = came_from[current]
             path.reverse()
             nx.draw_networkx_edges(GG, pos, edgelist=path, edge_color='blue', width=2, arrows=True, arrowsize=20)
+            # 输出最短路径的路程
+            path_length = sum(graph.cost(a, b) for a, b in path)
+            print("最短路径的路程:", path_length)
         plt.title("A* Search Visualization")
 
-    ani = FuncAnimation(fig, update, frames=len(search_steps), interval=200, repeat=False)
+    ani = FuncAnimation(fig, update, frames=len(search_steps), repeat=False) #动画速度, interval=200
     return ani
 
 # 示例使用
 obstacles = [(1, 1), (2, 2), (3, 3)]  # 障碍物位置
-graph = GridGraph(15, 15, obstacles)
+graph = GridGraph(5, 5, obstacles)
 start = (0, 0)
-goal = (10, 4)
+goal = (3, 4)
 came_from, cost_so_far, search_steps = a_star_search(graph, start, goal, heuristic)
 
 print("路径:", came_from)
