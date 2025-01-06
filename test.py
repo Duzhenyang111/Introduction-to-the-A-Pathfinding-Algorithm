@@ -4,28 +4,31 @@ from queue import PriorityQueue
 from matplotlib.animation import FuncAnimation
 
 class GridGraph:
-    def __init__(self, width, height):
+    def __init__(self, width, height, obstacles=None):
         self.width = width
         self.height = height
         self.edges = {}
         self.weights = {}
+        self.obstacles = obstacles if obstacles else []
         self.create_grid()
 
     def create_grid(self):
         # 创建网格图，初始化边和权重
         for x in range(self.width):
             for y in range(self.height):
+                if (x, y) in self.obstacles:
+                    continue
                 self.edges[(x, y)] = []
-                if x > 0:
+                if x > 0 and (x-1, y) not in self.obstacles:
                     self.edges[(x, y)].append((x-1, y))
                     self.weights[((x, y), (x-1, y))] = 1
-                if x < self.width - 1:
+                if x < self.width - 1 and (x+1, y) not in self.obstacles:
                     self.edges[(x, y)].append((x+1, y))
                     self.weights[((x, y), (x+1, y))] = 1
-                if y > 0:
+                if y > 0 and (x, y-1) not in self.obstacles:
                     self.edges[(x, y)].append((x, y-1))
                     self.weights[((x, y), (x, y-1))] = 1
-                if y < self.height - 1:
+                if y < self.height - 1 and (x, y+1) not in self.obstacles:
                     self.edges[(x, y)].append((x, y+1))
                     self.weights[((x, y), (x, y+1))] = 1
 
@@ -55,7 +58,6 @@ def a_star_search(graph, start, goal, heuristic):
 
     while not frontier.empty():
         current_priority, current = frontier.get()
-        # print("当前节点:", current)
         if current == goal:
             break
 
@@ -128,18 +130,26 @@ def visualize_search(graph, search_steps, start, goal):
     ani = FuncAnimation(fig, update, frames=len(search_steps), interval=200, repeat=False)
     return ani
 
-# 定义网格图
-width, height = 15, 15
-graph = GridGraph(width, height)
+# # 定义网格图
+# width, height = 15, 15
+# graph = GridGraph(width, height)
 
-start = (2, 1)
-goal = (4, 10)
+# start = (2, 1)
+# goal = (4, 10)
+# came_from, cost_so_far, search_steps = a_star_search(graph, start, goal, heuristic)
+
+
+
+# 示例使用
+obstacles = [(1, 1), (2, 2), (3, 3)]  # 障碍物位置
+graph = GridGraph(15, 15, obstacles)
+start = (0, 0)
+goal = (10, 4)
 came_from, cost_so_far, search_steps = a_star_search(graph, start, goal, heuristic)
 
 print("路径:", came_from)
 print("成本:", cost_so_far)
 print("搜索步骤:", search_steps[-1])
-
 ani = visualize_search(graph, search_steps, start, goal)
 plt.show()
 
